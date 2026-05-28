@@ -49,9 +49,8 @@ app.post('/api/contact', async (req, res) => {
     });
   }
 
-  try {
-    // Email to YOU (RJ) — notification
-    await transporter.sendMail({
+   try {
+    const mailOptions = {
       from: process.env.EMAIL_USER,
       to: process.env.EMAIL_USER,
       subject: `📬 New Portfolio Message from ${name}`,
@@ -64,23 +63,9 @@ app.post('/api/contact', async (req, res) => {
           <p style="color:#ccc; padding: 16px; background: #0D1117; border-radius: 8px;">${message}</p>
         </div>
       `,
-    });
+    };
 
-    // Auto-reply to sender
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: `Thanks for reaching out, ${name}! — RJ Salundaga`,
-      html: `
-        <div style="font-family: monospace; background: #050A0F; color: #fff; padding: 32px; border-radius: 12px;">
-          <h2 style="color: #00FFD1;">Hey ${name}! 👋</h2>
-          <p>Thanks for your message. I've received it and will get back to you soon!</p>
-          <p style="color:#888;">— RJ Salundaga</p>
-          <hr style="border-color: #0D1117;" />
-          <p style="color:#555; font-size: 12px;">Your message: "${message}"</p>
-        </div>
-      `,
-    });
+    await transporter.sendMail(mailOptions);
 
     res.json({ success: true, message: 'Message sent successfully!' });
   } catch (error) {
@@ -91,7 +76,6 @@ app.post('/api/contact', async (req, res) => {
     });
   }
 });
-
 // Get projects (for dynamic loading if needed)
 app.get('/api/projects', (req, res) => {
   const projects = [
